@@ -1,7 +1,7 @@
 docker-gen
 =====
 
-![latest 0.7.3](https://img.shields.io/badge/latest-0.7.3-green.svg?style=flat)
+![latest 0.7.6](https://img.shields.io/badge/latest-0.7.6-green.svg?style=flat)
 [![Build Status](https://travis-ci.org/jwilder/docker-gen.svg?branch=master)](https://travis-ci.org/jwilder/docker-gen)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)
 
@@ -25,17 +25,14 @@ There are three common ways to run docker-gen:
 
 #### Host Install
 
-Linux/OSX binaries for release [0.7.3](https://github.com/jwilder/docker-gen/releases)
+Linux/OSX binaries for release [0.7.6](https://github.com/babinkos/docker-gen/releases)
 
-* [amd64](https://github.com/jwilder/docker-gen/releases/download/0.7.3/docker-gen-linux-amd64-0.7.3.tar.gz)
-* [i386](https://github.com/jwilder/docker-gen/releases/download/0.7.3/docker-gen-linux-i386-0.7.3.tar.gz)
-* [alpine-linux](https://github.com/jwilder/docker-gen/releases/download/0.7.3/docker-gen-alpine-linux-amd64-0.7.3.tar.gz)
 
 Download the version you need, untar, and install to your PATH.
 
 ```
-$ wget https://github.com/jwilder/docker-gen/releases/download/0.7.3/docker-gen-linux-amd64-0.7.3.tar.gz
-$ tar xvzf docker-gen-linux-amd64-0.7.3.tar.gz
+$ wget https://github.com/babinkos/docker-gen/releases/download/0.7.6/docker-gen-linux-amd64-0.7.6.tar.gz
+$ tar xvzf docker-gen-linux-amd64-0.7.6.tar.gz
 $ ./docker-gen
 ```
 
@@ -43,8 +40,10 @@ $ ./docker-gen
 
 Docker-gen can be bundled inside of a container along-side applications.
 
-[jwilder/nginx-proxy](https://index.docker.io/u/jwilder/nginx-proxy/) trusted build is an example of
+[k0s2018/test-nextcloud:nginx-proxy](https://index.docker.io/u/k0s2018/test-nextcloud/) trusted build is an example of
 running docker-gen within a container along-side nginx.
+Release built with patches to support AWS ECS.
+
 [jwilder/docker-register](https://github.com/jwilder/docker-register) is an example of running
 docker-gen within a container to do service registration with etcd.
 
@@ -363,7 +362,7 @@ For example, this is a JSON version of an emitted RuntimeContainer struct:
 * *`json $value`*: Returns the JSON representation of `$value` as a `string`.
 * *`keys $map`*: Returns the keys from `$map`. If `$map` is `nil`, a `nil` is returned. If `$map` is not a `map`, an error will be thrown.
 * *`last $array`*: Returns the last value of an array.
-* *`parseBool $string`*: parseBool returns the boolean value represented by the string. It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False. Any other value returns an error. Alias for [`strconv.ParseBool`](http://golang.org/pkg/strconv/#ParseBool) 
+* *`parseBool $string`*: parseBool returns the boolean value represented by the string. It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False. Any other value returns an error. Alias for [`strconv.ParseBool`](http://golang.org/pkg/strconv/#ParseBool)
 * *`replace $string $old $new $count`*: Replaces up to `$count` occurences of `$old` with `$new` in `$string`. Alias for [`strings.Replace`](http://golang.org/pkg/strings/#Replace)
 * *`sha1 $string`*: Returns the hexadecimal representation of the SHA1 hash of `$string`.
 * *`split $string $sep`*: Splits `$string` into a slice of substrings delimited by `$sep`. Alias for [`strings.Split`](http://golang.org/pkg/strings/#Split)
@@ -451,4 +450,3 @@ $ make
 ### License
 
 MIT
-
