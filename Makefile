@@ -10,11 +10,19 @@ docker-gen:
 	echo "Building docker-gen"
 	go build -ldflags "$(LDFLAGS)" ./cmd/docker-gen
 
-dist-clean:
+dist-musl-clean:
+	rm -rf dist/alpine-linux-musl
+	rm -f docker-gen-alpine-linux-musl-*.tar.gz
+
+dist-clean: dist-musl-clean
 	rm -rf dist
 	rm -f docker-gen-alpine-linux-*.tar.gz
 	rm -f docker-gen-linux-*.tar.gz
 	rm -f docker-gen-darwin-*.tar.gz
+
+dist-musl:
+		#CC=$(which musl-gcc) go build --ldflags '-w -linkmode external -extldflags "-static"'
+		mkdir -p dist/alpine-linux-musl/amd64 && GOOS=linux CC=$(which musl-gcc) GOARCH=amd64 go build -ldflags "$(LDFLAGS) '-w -linkmode external -extldflags "-static"'" -a -tags netgo -installsuffix netgo -o dist/alpine-linux/amd64/docker-gen ./cmd/docker-gen
 
 dist: dist-clean
 	mkdir -p dist/alpine-linux/amd64 && GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -a -tags netgo -installsuffix netgo -o dist/alpine-linux/amd64/docker-gen ./cmd/docker-gen
@@ -27,7 +35,11 @@ dist: dist-clean
 	mkdir -p dist/linux/armhf  && GOOS=linux GOARCH=arm GOARM=6 go build -ldflags "$(LDFLAGS)" -o dist/linux/armhf/docker-gen ./cmd/docker-gen
 	mkdir -p dist/darwin/amd64 && GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o dist/darwin/amd64/docker-gen ./cmd/docker-gen
 	mkdir -p dist/darwin/i386  && GOOS=darwin GOARCH=386 go build -ldflags "$(LDFLAGS)" -o dist/darwin/i386/docker-gen ./cmd/docker-gen
+	dist-musl
 
+release-musl: dist-musl
+	glock sync -n < GLOCKFILE
+	tar -cvzf docker-gen-alpine-linux-musl-amd64-$(TAG).tar.gz -C dist/alpine-linux-musl/amd64 docker-gen
 
 release: dist
 	glock sync -n < GLOCKFILE
@@ -41,6 +53,7 @@ release: dist
 	tar -cvzf docker-gen-linux-armhf-$(TAG).tar.gz -C dist/linux/armhf docker-gen
 	tar -cvzf docker-gen-darwin-amd64-$(TAG).tar.gz -C dist/darwin/amd64 docker-gen
 	tar -cvzf docker-gen-darwin-i386-$(TAG).tar.gz -C dist/darwin/i386 docker-gen
+	tar -cvzf docker-gen-alpine-linux-musl-amd64-$(TAG).tar.gz -C dist/alpine-linux-musl/amd64 docker-gen
 
 get-deps:
 	go get github.com/robfig/glock
